@@ -54,7 +54,8 @@ debut=1
 fin=9
 interval=debut:fin
 v1=c(L1[interval,1])
-res=list(v1)
+fragments=list(v1)
+resSS=c(v1[5])
 
 
 #Elargissement
@@ -63,8 +64,44 @@ for (i in 10:dim(L1)[1]){
   fin=i
   interval=debut:fin
   v2=c(L1[interval,1])
-  res=unlist(list(res,list(v2)),recursive = F)
+  fragments=unlist(list(fragments,list(v2)),recursive = F)
+  resSS=append(resSS,v2[5])
 }
+
+
+#Attribution
+vAA=c("A","C","D","E","F","G","H","I","K","L","M","N","P","Q","R","S","T","W","Y","Z")
+#initialisation
+frag1=unlist(fragments[1])
+residu=frag1[1]
+vvide=c(rep(0,20))
+for(i in 1:length(vAA)){
+  if(residu==vAA[i]){
+    vvide[i]=1
+  }
+}
+vvide_LISTE=list(vvide)
+
+#elargissement
+for(j in 2:length(frag1)){ # itére sur les res des fragments
+  residu=frag1[j]
+  vvide2=c(rep(0,20))
+  for(k in 1:length(vAA)){ #itère et compare dans les res vAA
+    if(residu==vAA[k]){
+      vvide2[k]=1
+    }
+  }
+  vvide_LISTE=unlist(list(vvide_LISTE,list(vvide2)))
+}
+
+
+
+
+
+
+
+
+
 
 
 
