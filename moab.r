@@ -18,16 +18,8 @@ index=which(c(db[,1]=="PROT"))
 index[length(index)+1]=length(db[,1])+1
 
 #Matrice de Proteine
-#initialisation
-debut=index[1]+1
-fin=index[2]-1
-interval=debut:fin
-M1=data.frame(db[interval,])
-colnames(M1)=c("AAM",toString(db[index[1],2]))
-G1=list(M1)
-
-#Elargissement
-for(i in 2:(length(index)-1)){
+G1=list()
+for(i in 1:(length(index)-1)){
   debut=index[i]+1
   fin=index[i+1]-1
   interval=debut:fin
@@ -46,55 +38,73 @@ selectApp=c(sample(1:length(G1),2/3*length(G1),replace = F))
 EchtApp=G1[selectApp]
 EchtTest=G1[-selectApp]
 
+#Fragmentation 9/9 pour toutes les proteines du jeu de donnée
 
-#Fragmentation en 9/9 (Test sur la Matrice 1)
-#initialisation
-L1=as.data.frame(G1[1])
-debut=1
-fin=9
-interval=debut:fin
-v1=c(L1[interval,1])
-fragments=list(v1)
-resSS=c(v1[5])
-
-
-#Elargissement
-for (i in 10:dim(L1)[1]){
-  debut=i-8
-  fin=i
-  interval=debut:fin
-  v2=c(L1[interval,1])
-  fragments=unlist(list(fragments,list(v2)),recursive = F)
-  resSS=append(resSS,v2[5])
-}
-
-
-#Attribution
 vAA=c("A","C","D","E","F","G","H","I","K","L","M","N","P","Q","R","S","T","W","Y","Z")
-#initialisation
-frag1=unlist(fragments[1])
-residu=frag1[1]
-vvide=c(rep(0,20))
-for(i in 1:length(vAA)){
-  if(residu==vAA[i]){
-    vvide[i]=1
-  }
-}
-vvide_LISTE=list(vvide)
 
-#elargissement
-for(j in 2:length(frag1)){ # itére sur les res des fragments
-  residu=frag1[j]
-  vvide2=c(rep(0,20))
-  for(k in 1:length(vAA)){ #itère et compare dans les res vAA
-    if(residu==vAA[k]){
-      vvide2[k]=1
+struct_second=list()
+res_coded=list()
+
+#Etape1 : Recuperer chaque proteine dans la liste de matrice G1
+for(i in 1:length(G1)){
+P=as.data.frame(G1[1])
+  
+#Etape2: Recuperer tous les fragments(residus/ss) pour la proteine courante
+  fragments=list()
+  ss_fragL=list()
+  for(i in 1:(length(P[,1])-9+1)){
+    debut=i
+    fin=i+8
+    residus_frag=P[debut:fin,1]
+    ss_frag=c(P[i+4,2])
+    fragments=unlist(list(fragments,list(residus_frag)), recursive=F)
+    ss_fragL=unlist(list(ss_fragL,list(ss_frag)), recursive=F)
+  }
+  ss_fragL=unlist(ss_fragL)         #vecteurs des structures secondaires des fragments/Proteine
+  
+#Etape3: Associer chaque residus du fragment un vecteur 0/1
+  #Liste des stockage fragments codés
+  vecfragL_Tot=list()
+  
+  #Parcours de la liste des fragments/Prot
+  for(k in 1:length(fragments)){
+    seq_frag=unlist(fragments[k])
+    vec_fragL=list()
+    
+    for(l in 1:length(seq_frag)){
+      residu=seq_frag[l]
+      
+      vec_frag=c(rep(0,20))
+      for(n in 1:length(vAA)){
+        if(residu==vAA[n]){
+          vec_frag[n]=1       #liste des vecteurs/residu
+          break
+        }
+      }
+      vec_fragL=unlist(list(vec_fragL,list(vec_frag)), recursive = F) #liste des vecteurs/fragments
+      vec_fragL=unlist(vec_fragL)#si on take l'information du fragment! hyp : OUI sinon !unlist
     }
+    vecfragL_Tot=unlist(list(vecfragL_Tot,list(vec_fragL)), recursive = F) #liste des vecteurs/Proteine
   }
-  vvide_LISTE=unlist(list(vvide_LISTE,list(vvide2)))
+
+#Etape 4: On stocke les données généres pour chaque proteine dans une liste (1 itération)
+  #données générées
+  
+  #1/ Vecteur des structures secondaires associés aux fragments (dans l'ordre)
+  #de la prot ~= nbre de fragments / R[ss1,ss2,ss3,...] 
+  ss_fragL
+  
+  #2/ Liste des vecteurs résidus codés de la protéine (organisés en fragments) 
+  #R[frag1,frag2,...]
+  vecfragL_Tot
+  
+  #Rajout
+  struct_second=unlist(list(struct_second,list(ss_fragL)), recursive=F)
+  res_coded=unlist(list(res_coded,list(vecfragL_Tot)), recursive=F)
+  
 }
 
-
+    
 
 
 
