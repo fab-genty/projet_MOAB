@@ -47,7 +47,7 @@ res_coded=list()
 
 #Etape1 : Recuperer chaque proteine dans la liste de matrice G1
 for(i in 1:length(G1)){
-P=as.data.frame(G1[1])
+  P=as.data.frame(G1[i])
   
 #Etape2: Recuperer tous les fragments(residus/ss) pour la proteine courante
   fragments=list()
