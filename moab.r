@@ -42,8 +42,11 @@ EchtTest=G1[-selectApp]
 
 vAA=c("A","C","D","E","F","G","H","I","K","L","M","N","P","Q","R","S","T","W","Y","Z")
 
+#con=file("sortie.txt",open="w")
 struct_second=list()
 res_coded=list()
+Mb=matrix(ncol=2)
+
 
 #Etape1 : Recuperer chaque proteine dans la liste de matrice G1
 for(i in 1:length(G1)){
@@ -84,32 +87,25 @@ for(i in 1:length(G1)){
       vec_fragL=unlist(list(vec_fragL,list(vec_frag)), recursive = F) #liste des vecteurs/fragments
       vec_fragL=unlist(vec_fragL)#si on take l'information du fragment! hyp : OUI sinon !unlist
     }
-    vecfragL_Tot=unlist(list(vecfragL_Tot,list(vec_fragL)), recursive = F) #liste des vecteurs/Proteine
+    #liste des vecteurs/Proteine
+    vecfragL_Tot=unlist(list(vecfragL_Tot,list(paste(vec_fragL,collapse=""))), recursive = F)
+    #Construction_Matrice
+    Mg=as.matrix(vecfragL_Tot,ncol=1)
+    Md=as.matrix(ss_fragL,ncol=1)
   }
 
-#Etape 4: On stocke les données généres pour chaque proteine dans une liste (1 itération)
+#Etape 4: Concatenation des matrices
   #données générées
-  
-  #1/ Vecteur des structures secondaires associés aux fragments (dans l'ordre)
-  #de la prot ~= nbre de fragments / R[ss1,ss2,ss3,...] 
-  ss_fragL
-  
-  #2/ Liste des vecteurs résidus codés de la protéine (organisés en fragments) 
-  #R[frag1,frag2,...]
-  vecfragL_Tot
-  
-  #Rajout
-  struct_second=unlist(list(struct_second,list(ss_fragL)), recursive=F)
-  res_coded=unlist(list(res_coded,list(vecfragL_Tot)), recursive=F)
-  
+  #1/construction Matrix
+  Ma=cbind(Mg,Md)
+  Mb=rbind(Mb,Ma)
 }
 
-    
+Mb=Mb[-1,]
 
-
-
-
-
+#Etape 5: Ecriture dans un fichier
+fichiersortie="frag_ss.txt"
+write.table(Mb[1:1000],file=fichiersortie,sep ="\t",row.names = F)
 
 
 
