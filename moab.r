@@ -105,7 +105,7 @@ Mb=Mb[-1,]
 
 #Etape 5: Ecriture dans un fichier
 fichiersortie="frag_ss.txt"
-write.table(Mb[1:1000],file=fichiersortie,sep ="\t",row.names = F)
+write.table(Mb,file=fichiersortie,sep ="\t",row.names = F)
 
 
 
