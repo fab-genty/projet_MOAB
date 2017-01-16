@@ -99,10 +99,12 @@ for ligne in filin:
 	elif(ligne[0]=="X"):
 		continue
 
-	else:
-		#filout.write(proteine)
+	elif(ligne[4]=="0" or ligne[4]=="1" or ligne[4]=="2"):
 		filout.write(ligne[0])
 		filout.write("\t")
 		filout.write(ligne[4])
 		filout.write("\n")
 		proteine=""
+
+filin.close()
+
