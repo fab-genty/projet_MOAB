@@ -21,9 +21,14 @@ dbTest=db[echtTest,]
 
 #Realisation du nnet
 library(nnet)
-nnet(db[,1],db[,2],size=4)
+net=nnet(dbApp[,1],dbApp[,2],size=4)
 
+ypred=predict(net, newdata=dbApp)
 
+library(caret)
+yobs=dbApp[,2]
+ypred
+table(yobs,ypred)
 
 
 
